@@ -22,9 +22,11 @@ public class SkillController {
 
     @GetMapping("")
     public String index(Model model) {
+//@RequestParam(required = false)Integer skillId
+       model.addAttribute("skills",skillRepository.findAll());
+       return "skills/index";
 
-        model.addAttribute("skills",skillRepository.findAll());
-        return "skills/index";
+
     }
 
     @GetMapping("add")
@@ -34,25 +36,26 @@ public class SkillController {
     }
 
     @PostMapping("/add")
-    public String processAddSkillForm(@ModelAttribute @Valid Skill newEmployer,
+    public String processAddSkillForm(@ModelAttribute @Valid Skill skill,
                                          Errors errors, Model model) {
 
         if (errors.hasErrors()) {
             return "skills/add";
         }
-        skillRepository.save(newEmployer);
+        skillRepository.save(skill);
         return "redirect:";
     }
 
-    @GetMapping("view/{employerId}")
-    public String displayViewSkill(Model model, @PathVariable int employerId) {
+    @GetMapping("view/{skillId}")
+    public String displayViewSkill(Model model, @PathVariable int skillId) {
 
-        Optional optEmployer = skillRepository.findById(employerId);
+        Optional optEmployer = skillRepository.findById(skillId);
         if (optEmployer.isPresent()) {
-            Skill employer = (Skill) optEmployer.get();
-            model.addAttribute("skills", employer);
-            return "skill/view";
-        } else {
+            Skill skill = (Skill) optEmployer.get();
+            model.addAttribute("skill", skill);
+            return "skills/view";
+        }
+        else {
             return "redirect:../";
         }
     }
